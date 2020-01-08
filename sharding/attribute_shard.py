@@ -2,6 +2,7 @@
 
 Fork from: https://docs.sqlalchemy.org/en/13/_modules/examples/sharding/attribute_shard.html
 """
+import os
 import sys
 import datetime
 
@@ -14,22 +15,29 @@ from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.sql import operators, visitors
 
 
-# db1 is used for id generation. The "pool_threadlocal"
-# causes the id_generator() to use the same connection as that
-# of an ongoing transaction within db1.
 echo = '-v' in sys.argv
 
 if '--postgres' in sys.argv:
+    DB_HOST = os.getenv('DB_HOST', '127.0.0.1')
+    DB_USER = os.getenv('DB_USER', 'postgres')
+    DB_PASS = os.getenv('DB_PASS', 'postgres')
+
     db1 = create_engine(
-        "postgresql+psycopg2://postgres:postgres@127.0.0.1:5432/db1",
+        f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:5432/db1",
         echo=echo, pool_threadlocal=True)
     db2 = create_engine(
-        "postgresql+psycopg2://postgres:postgres@127.0.0.1:5432/db2", echo=echo)
+        f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:5432/db2",
+        echo=echo)
     db3 = create_engine(
-        "postgresql+psycopg2://postgres:postgres@127.0.0.1:5432/db3", echo=echo)
+        f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:5432/db3",
+        echo=echo)
     db4 = create_engine(
-        "postgresql+psycopg2://postgres:postgres@127.0.0.1:5432/db4", echo=echo)
+        f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:5432/db4",
+        echo=echo)
 else:
+    # db1 is used for id generation. The "pool_threadlocal"
+    # causes the id_generator() to use the same connection as that
+    # of an ongoing transaction within db1.
     db1 = create_engine("sqlite://", echo=echo, pool_threadlocal=True)
     db2 = create_engine("sqlite://", echo=echo)
     db3 = create_engine("sqlite://", echo=echo)
