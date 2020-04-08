@@ -1,4 +1,4 @@
-# Sqla Demos
+# SQLAlchemy Demos
 
 有关 SQLAlchemy 的示例
 
